@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.industrialdefectiveproductinspection.mapper.DefectRecordMapper">
+
+    <resultMap id="DefectRecordMap" type="com.example.industrialdefectiveproductinspection.domain.DefectRecord">
+        <id column="id" property="id"/>
+        <result column="product_code" property="productCode"/>
+        <result column="defect_type" property="defectType"/>
+        <result column="detected_at" property="detectedAt"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="DefectRecordMap">
+        SELECT id, product_code, defect_type, detected_at
+        FROM defect_record
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.example.industrialdefectiveproductinspection.domain.DefectRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO defect_record (product_code, defect_type, detected_at)
+        VALUES (#{productCode}, #{defectType}, #{detectedAt})
+    </insert>
+
+</mapper>

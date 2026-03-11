@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.industrialdefectiveproductinspection.mapper.AuditLogMapper">
+    <resultMap id="AuditLogResult" type="com.example.industrialdefectiveproductinspection.domain.AuditLog">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="action" property="action" />
+        <result column="resource" property="resource" />
+        <result column="ip" property="ip" />
+        <result column="detail" property="detail" />
+        <result column="created_at" property="createdAt" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.example.industrialdefectiveproductinspection.domain.AuditLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_audit_log (user_id, action, resource, ip, detail)
+        VALUES (#{userId}, #{action}, #{resource}, #{ip}, #{detail})
+    </insert>
+
+    <select id="selectByUserId" resultMap="AuditLogResult">
+        SELECT id, user_id, action, resource, ip, detail, created_at
+        FROM sys_audit_log
+        WHERE user_id = #{userId}
+        ORDER BY id DESC
+    </select>
+</mapper>

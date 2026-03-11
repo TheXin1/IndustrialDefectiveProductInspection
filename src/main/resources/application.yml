@@ -2,9 +2,9 @@ spring:
   application:
     name: IndustrialDefectiveProductInspection
   datasource:
-    url: jdbc:mysql://localhost:3306/industrial_inspection?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
-    username: root
-    password: root
+    url: jdbc:mysql://8.140.231.81:3306/industrialdefect?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis:

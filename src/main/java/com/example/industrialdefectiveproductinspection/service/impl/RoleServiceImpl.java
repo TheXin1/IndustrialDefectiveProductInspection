@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.service.impl;
+package com.example.industrialdefectiveproductinspection.service.impl;
 
 import com.example.industrialdefectiveproductinspection.domain.Role;
 import com.example.industrialdefectiveproductinspection.dto.CreateRoleRequest;

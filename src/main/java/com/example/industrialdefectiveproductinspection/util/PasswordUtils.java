@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.util;
+package com.example.industrialdefectiveproductinspection.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

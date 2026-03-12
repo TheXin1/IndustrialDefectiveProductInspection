@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.dto;
+package com.example.industrialdefectiveproductinspection.dto;
 
 import lombok.Data;
 

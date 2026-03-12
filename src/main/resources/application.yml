@@ -12,3 +12,7 @@ mybatis:
   type-aliases-package: com.example.industrialdefectiveproductinspection.domain
   configuration:
     map-underscore-to-camel-case: true
+
+inference:
+  api:
+    base-url: http://127.0.0.1:6008

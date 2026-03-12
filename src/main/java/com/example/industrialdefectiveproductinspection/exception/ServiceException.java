@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.exception;
+package com.example.industrialdefectiveproductinspection.exception;
 
 public class ServiceException extends RuntimeException {
     public ServiceException(String message) {

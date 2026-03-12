@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.service.impl;
+package com.example.industrialdefectiveproductinspection.service.impl;
 
 import com.example.industrialdefectiveproductinspection.domain.Permission;
 import com.example.industrialdefectiveproductinspection.mapper.PermissionMapper;

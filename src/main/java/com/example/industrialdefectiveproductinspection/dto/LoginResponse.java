@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.dto;
+package com.example.industrialdefectiveproductinspection.dto;
 
 import com.example.industrialdefectiveproductinspection.domain.Permission;
 import com.example.industrialdefectiveproductinspection.domain.Role;

@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.mapper;
+package com.example.industrialdefectiveproductinspection.mapper;
 
 import org.apache.ibatis.annotations.Param;
 

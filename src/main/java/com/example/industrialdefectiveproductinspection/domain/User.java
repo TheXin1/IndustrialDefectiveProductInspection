@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.domain;
+package com.example.industrialdefectiveproductinspection.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.exception;
+package com.example.industrialdefectiveproductinspection.exception;
 
 import com.example.industrialdefectiveproductinspection.dto.ApiResponse;
 import org.springframework.http.HttpStatus;

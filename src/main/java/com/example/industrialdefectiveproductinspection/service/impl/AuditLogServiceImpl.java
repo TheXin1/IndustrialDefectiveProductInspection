@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.service.impl;
+package com.example.industrialdefectiveproductinspection.service.impl;
 
 import com.example.industrialdefectiveproductinspection.domain.AuditLog;
 import com.example.industrialdefectiveproductinspection.mapper.AuditLogMapper;

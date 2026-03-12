@@ -1,4 +1,4 @@
-﻿package com.example.industrialdefectiveproductinspection.domain;
+package com.example.industrialdefectiveproductinspection.domain;
 
 import lombok.Data;
 

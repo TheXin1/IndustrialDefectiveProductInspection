@@ -15,4 +15,4 @@ mybatis:
 
 inference:
   api:
-    base-url: http://127.0.0.1:6008
+    base-url: https://uu906076-bf4z-c9645eed.westd.seetacloud.com:8443

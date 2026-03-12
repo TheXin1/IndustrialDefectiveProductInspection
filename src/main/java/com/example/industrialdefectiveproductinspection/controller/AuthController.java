@@ -3,6 +3,8 @@ package com.example.industrialdefectiveproductinspection.controller;
 import com.example.industrialdefectiveproductinspection.dto.ApiResponse;
 import com.example.industrialdefectiveproductinspection.dto.LoginRequest;
 import com.example.industrialdefectiveproductinspection.dto.LoginResponse;
+import com.example.industrialdefectiveproductinspection.dto.RegisterRequest;
+import com.example.industrialdefectiveproductinspection.domain.User;
 import com.example.industrialdefectiveproductinspection.service.AuthService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,5 +23,10 @@ public class AuthController {
     @PostMapping("/login")
     public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request) {
         return ApiResponse.ok(authService.login(request));
+    }
+
+    @PostMapping("/register")
+    public ApiResponse<User> register(@RequestBody RegisterRequest request) {
+        return ApiResponse.ok(authService.register(request));
     }
 }

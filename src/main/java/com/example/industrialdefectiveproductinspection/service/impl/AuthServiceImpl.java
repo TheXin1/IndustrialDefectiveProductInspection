@@ -5,8 +5,11 @@ import com.example.industrialdefectiveproductinspection.domain.Role;
 import com.example.industrialdefectiveproductinspection.domain.User;
 import com.example.industrialdefectiveproductinspection.dto.LoginRequest;
 import com.example.industrialdefectiveproductinspection.dto.LoginResponse;
+import com.example.industrialdefectiveproductinspection.dto.RegisterRequest;
 import com.example.industrialdefectiveproductinspection.exception.ServiceException;
+import com.example.industrialdefectiveproductinspection.mapper.RoleMapper;
 import com.example.industrialdefectiveproductinspection.mapper.UserMapper;
+import com.example.industrialdefectiveproductinspection.mapper.UserRoleMapper;
 import com.example.industrialdefectiveproductinspection.service.AuthService;
 import com.example.industrialdefectiveproductinspection.util.PasswordUtils;
 import org.springframework.stereotype.Service;
@@ -18,9 +21,15 @@ import java.util.List;
 @Service
 public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
+    private final UserRoleMapper userRoleMapper;
 
-    public AuthServiceImpl(UserMapper userMapper) {
+    public AuthServiceImpl(UserMapper userMapper,
+                           RoleMapper roleMapper,
+                           UserRoleMapper userRoleMapper) {
         this.userMapper = userMapper;
+        this.roleMapper = roleMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -48,5 +57,30 @@ public class AuthServiceImpl implements AuthService {
         response.setRoles(roles);
         response.setPermissions(permissions);
         return response;
+    }
+
+    @Override
+    @Transactional
+    public User register(RegisterRequest request) {
+        if (request == null || request.getUsername() == null || request.getPassword() == null) {
+            throw new ServiceException("username_password_required");
+        }
+        if (userMapper.selectByUsername(request.getUsername()) != null) {
+            throw new ServiceException("username_exists");
+        }
+        Role defaultRole = roleMapper.selectByCode("USER");
+        if (defaultRole == null) {
+            throw new ServiceException("default_role_missing");
+        }
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPasswordHash(PasswordUtils.hash(request.getPassword()));
+        user.setDisplayName(request.getDisplayName());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        user.setStatus(2);
+        userMapper.insert(user);
+        userRoleMapper.insertBatch(user.getId(), List.of(defaultRole.getId()));
+        return userMapper.selectById(user.getId());
     }
 }

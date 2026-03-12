@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div style="display: flex; align-items: center; gap: 12px;">
     <div class="badge">系统运行中</div>
     <div class="subtle">{{ timeText }}</div>

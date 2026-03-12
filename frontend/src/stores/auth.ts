@@ -1,4 +1,4 @@
-﻿import { defineStore } from 'pinia'
+import { defineStore } from 'pinia'
 import { api } from '../api'
 import type { LoginResponse, Permission, Role, User } from '../api/types'
 

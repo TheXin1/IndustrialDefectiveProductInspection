@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="panel" style="margin-bottom: 20px;">
     <h2 style="margin-top: 0;">质量监控总览</h2>
     <div class="kpi-grid">

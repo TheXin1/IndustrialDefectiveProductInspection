@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="panel" style="max-width: 420px; margin: 80px auto;">
     <h2 style="margin-top: 0;">登录</h2>
     <el-form :model="form" @submit.prevent="onSubmit">

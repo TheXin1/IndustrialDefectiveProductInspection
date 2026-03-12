@@ -1,4 +1,4 @@
-﻿# Frontend (Vue 3 + Vite + Pinia + Element Plus)
+# Frontend (Vue 3 + Vite + Pinia + Element Plus)
 
 ## 开发环境
 - Node.js 18+

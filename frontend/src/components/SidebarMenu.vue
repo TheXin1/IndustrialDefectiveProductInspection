@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <el-menu
     class="el-menu-vertical-demo"
     background-color="transparent"

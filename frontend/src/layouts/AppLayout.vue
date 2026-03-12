@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="app-shell">
     <aside class="app-sidebar">
       <div>

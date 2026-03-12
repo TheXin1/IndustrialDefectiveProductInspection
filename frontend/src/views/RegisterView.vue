@@ -56,9 +56,7 @@ const onSubmit = async () => {
       password: form.password,
       displayName: form.displayName || undefined,
       email: form.email || undefined,
-      phone: form.phone || undefined,
-      status: 1,
-      roleIds: [2]
+      phone: form.phone || undefined
     })
     if (!res.success) {
       throw new Error(res.message || 'register_failed')

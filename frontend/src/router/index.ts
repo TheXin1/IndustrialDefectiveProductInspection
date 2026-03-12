@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
 import AppLayout from '../layouts/AppLayout.vue'
 import DashboardView from '../views/DashboardView.vue'
 import DetectView from '../views/DetectView.vue'
@@ -8,6 +9,7 @@ import PlaceholderView from '../views/PlaceholderView.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/login', component: LoginView, meta: { public: true } },
+  { path: '/register', component: RegisterView, meta: { public: true } },
   {
     path: '/',
     component: AppLayout,

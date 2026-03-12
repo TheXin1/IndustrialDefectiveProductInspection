@@ -12,7 +12,9 @@
         登录
       </el-button>
     </el-form>
-    <p class="subtle" style="margin-top: 12px;">提示：默认未启用权限拦截，仅基于登录返回菜单权限。</p>
+    <p class="subtle" style="margin-top: 12px;">
+      还没有账号？<el-link type="primary" @click="goRegister">去注册</el-link>
+    </p>
   </div>
 </template>
 
@@ -43,4 +45,6 @@ const onSubmit = async () => {
     loading.value = false
   }
 }
+
+const goRegister = () => router.push('/register')
 </script>

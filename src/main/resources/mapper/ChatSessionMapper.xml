@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.industrialdefectiveproductinspection.mapper.ChatSessionMapper">
+    <resultMap id="ChatSessionResult" type="com.example.industrialdefectiveproductinspection.domain.ChatSession">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="title" property="title" />
+        <result column="prompt" property="prompt" />
+        <result column="max_tgt_len" property="maxTgtLen" />
+        <result column="top_p" property="topP" />
+        <result column="temperature" property="temperature" />
+        <result column="image_data_url" property="imageDataUrl" />
+        <result column="normal_data_url" property="normalDataUrl" />
+        <result column="result_json" property="resultJson" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.example.industrialdefectiveproductinspection.domain.ChatSession" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO chat_session (user_id, title, prompt, max_tgt_len, top_p, temperature, image_data_url, normal_data_url, result_json)
+        VALUES (#{userId}, #{title}, #{prompt}, #{maxTgtLen}, #{topP}, #{temperature}, #{imageDataUrl}, #{normalDataUrl}, #{resultJson})
+    </insert>
+
+    <update id="update" parameterType="com.example.industrialdefectiveproductinspection.domain.ChatSession">
+        UPDATE chat_session
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="prompt != null">prompt = #{prompt},</if>
+            <if test="maxTgtLen != null">max_tgt_len = #{maxTgtLen},</if>
+            <if test="topP != null">top_p = #{topP},</if>
+            <if test="temperature != null">temperature = #{temperature},</if>
+            <if test="imageDataUrl != null">image_data_url = #{imageDataUrl},</if>
+            <if test="normalDataUrl != null">normal_data_url = #{normalDataUrl},</if>
+            <if test="resultJson != null">result_json = #{resultJson},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM chat_session WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultMap="ChatSessionResult">
+        SELECT id, user_id, title, prompt, max_tgt_len, top_p, temperature, image_data_url, normal_data_url,
+               result_json, created_at, updated_at
+        FROM chat_session
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectSummaryByUserId" resultType="com.example.industrialdefectiveproductinspection.dto.ChatSessionSummary">
+        SELECT id, title, updated_at AS updatedAt
+        FROM chat_session
+        WHERE user_id = #{userId}
+        ORDER BY updated_at DESC
+    </select>
+</mapper>

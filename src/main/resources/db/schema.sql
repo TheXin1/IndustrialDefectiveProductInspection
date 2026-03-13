@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS sys_user (
+CREATE TABLE IF NOT EXISTS sys_user (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
     password_hash VARCHAR(100) NOT NULL,
@@ -75,4 +75,30 @@ CREATE TABLE IF NOT EXISTS inspection_record (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_record_user (user_id),
     INDEX idx_record_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS chat_session (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    title VARCHAR(200),
+    prompt VARCHAR(500),
+    max_tgt_len INT,
+    top_p DOUBLE,
+    temperature DOUBLE,
+    image_data_url MEDIUMTEXT,
+    normal_data_url MEDIUMTEXT,
+    result_json MEDIUMTEXT,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_chat_user (user_id),
+    INDEX idx_chat_updated (updated_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS chat_message (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    session_id BIGINT NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_chat_session (session_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

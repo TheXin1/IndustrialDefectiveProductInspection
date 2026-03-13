@@ -2,7 +2,7 @@ spring:
   application:
     name: IndustrialDefectiveProductInspection
   datasource:
-    url: jdbc:mysql://8.140.231.81:3306/industrialdefect?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://thexin.top:3306/industrialdefect?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

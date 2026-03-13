@@ -52,3 +52,31 @@ export interface InferenceDetectResponse {
   success: boolean
   data: InferenceDetectData
 }
+
+export interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+  time: string
+}
+
+export interface ChatSessionSummary {
+  id: number
+  title: string
+  updatedAt: string
+}
+
+export interface ChatSession {
+  id: number
+  userId: number
+  title: string
+  prompt: string
+  maxTgtLen: number
+  topP: number
+  temperature: number
+  imageDataUrl?: string
+  normalDataUrl?: string
+  result?: InferenceDetectResponse
+  createdAt?: string
+  updatedAt?: string
+  messages: ChatMessage[]
+}

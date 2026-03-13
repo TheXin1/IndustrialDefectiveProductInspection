@@ -15,5 +15,11 @@ export const request = {
   },
   post<T>(url: string, data?: unknown, config?: AxiosRequestConfig) {
     return http.post<ApiResponse<T>>(url, data, config).then((res) => res.data)
+  },
+  put<T>(url: string, data?: unknown, config?: AxiosRequestConfig) {
+    return http.put<ApiResponse<T>>(url, data, config).then((res) => res.data)
+  },
+  delete<T>(url: string, config?: AxiosRequestConfig) {
+    return http.delete<ApiResponse<T>>(url, config).then((res) => res.data)
   }
 }

@@ -4,7 +4,9 @@ import type {
   User,
   Role,
   Permission,
-  InferenceDetectResponse
+  InferenceDetectResponse,
+  ChatSession,
+  ChatSessionSummary
 } from './types'
 
 export const api = {
@@ -39,5 +41,20 @@ export const api = {
   },
   inferenceStartup() {
     return request.get<Record<string, unknown>>('/v1/inference/startup_status')
+  },
+  chatList(userId: number) {
+    return request.get<ChatSessionSummary[]>('/v1/chat/sessions', { params: { userId } })
+  },
+  chatGet(id: number) {
+    return request.get<ChatSession>(`/v1/chat/sessions/${id}`)
+  },
+  chatCreate(payload: Partial<ChatSession>) {
+    return request.post<ChatSession>('/v1/chat/sessions', payload)
+  },
+  chatUpdate(id: number, payload: Partial<ChatSession>) {
+    return request.put<ChatSession>(`/v1/chat/sessions/${id}`, payload)
+  },
+  chatDelete(id: number) {
+    return request.delete<void>(`/v1/chat/sessions/${id}`)
   }
 }

@@ -80,3 +80,14 @@ export interface ChatSession {
   updatedAt?: string
   messages: ChatMessage[]
 }
+
+export interface DashboardOverview {
+  todayCount: number
+  defectRate: number
+  alertCount: number
+  modelVersion: string
+  inferenceStatus: string
+  nodeStatus: string
+  alertPolicy: string
+  dataSync: string
+}

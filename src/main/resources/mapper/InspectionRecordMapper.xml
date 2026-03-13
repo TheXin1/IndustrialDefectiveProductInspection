@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.industrialdefectiveproductinspection.mapper.InspectionRecordMapper">
+    <resultMap id="InspectionRecordResult" type="com.example.industrialdefectiveproductinspection.domain.InspectionRecord">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="source_type" property="sourceType" />
+        <result column="image_url" property="imageUrl" />
+        <result column="localization_image_url" property="localizationImageUrl" />
+        <result column="description" property="description" />
+        <result column="has_anomaly" property="hasAnomaly" />
+        <result column="model_version" property="modelVersion" />
+        <result column="created_at" property="createdAt" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.example.industrialdefectiveproductinspection.domain.InspectionRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO inspection_record (user_id, source_type, image_url, localization_image_url, description, has_anomaly, model_version)
+        VALUES (#{userId}, #{sourceType}, #{imageUrl}, #{localizationImageUrl}, #{description}, #{hasAnomaly}, #{modelVersion})
+    </insert>
+
+    <select id="countTodayTotal" resultType="int">
+        SELECT COUNT(*)
+        FROM inspection_record
+        WHERE created_at >= CURDATE()
+    </select>
+
+    <select id="countTodayAnomaly" resultType="int">
+        SELECT COUNT(*)
+        FROM inspection_record
+        WHERE created_at >= CURDATE()
+          AND has_anomaly = 1
+    </select>
+
+    <select id="countAnomalySinceMinutes" resultType="int">
+        SELECT COUNT(*)
+        FROM inspection_record
+        WHERE created_at >= DATE_SUB(NOW(), INTERVAL #{minutes} MINUTE)
+          AND has_anomaly = 1
+    </select>
+</mapper>

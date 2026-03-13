@@ -6,7 +6,8 @@ import type {
   Permission,
   InferenceDetectResponse,
   ChatSession,
-  ChatSessionSummary
+  ChatSessionSummary,
+  DashboardOverview
 } from './types'
 
 export const api = {
@@ -41,6 +42,9 @@ export const api = {
   },
   inferenceStartup() {
     return request.get<Record<string, unknown>>('/v1/inference/startup_status')
+  },
+  dashboardOverview() {
+    return request.get<DashboardOverview>('/v1/dashboard/overview')
   },
   chatList(userId: number) {
     return request.get<ChatSessionSummary[]>('/v1/chat/sessions', { params: { userId } })

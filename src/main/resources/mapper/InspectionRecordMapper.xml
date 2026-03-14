@@ -38,4 +38,50 @@
         WHERE created_at >= DATE_SUB(NOW(), INTERVAL #{minutes} MINUTE)
           AND has_anomaly = 1
     </select>
+
+    <select id="selectPage" resultMap="InspectionRecordResult">
+        SELECT id, user_id, source_type, image_url, localization_image_url, description, has_anomaly, model_version, created_at
+        FROM inspection_record
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="hasAnomaly != null">
+                AND has_anomaly = #{hasAnomaly}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND description LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="startAt != null and startAt != ''">
+                AND created_at <![CDATA[>=]]> #{startAt}
+            </if>
+            <if test="endAt != null and endAt != ''">
+                AND created_at <![CDATA[<=]]> #{endAt}
+            </if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countPage" resultType="int">
+        SELECT COUNT(*)
+        FROM inspection_record
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="hasAnomaly != null">
+                AND has_anomaly = #{hasAnomaly}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND description LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="startAt != null and startAt != ''">
+                AND created_at <![CDATA[>=]]> #{startAt}
+            </if>
+            <if test="endAt != null and endAt != ''">
+                AND created_at <![CDATA[<=]]> #{endAt}
+            </if>
+        </where>
+    </select>
 </mapper>

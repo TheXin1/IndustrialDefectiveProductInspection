@@ -10,6 +10,8 @@ public class DashboardOverview {
     private String modelVersion;
     private String inferenceStatus;
     private String nodeStatus;
+/*
     private String alertPolicy;
     private String dataSync;
+*/
 }

@@ -91,3 +91,22 @@ export interface DashboardOverview {
   alertPolicy: string
   dataSync: string
 }
+
+export interface PageResult<T> {
+  page: number
+  size: number
+  total: number
+  records: T[]
+}
+
+export interface InspectionRecord {
+  id: number
+  userId?: number
+  sourceType?: string
+  imageUrl?: string
+  localizationImageUrl?: string
+  description?: string
+  hasAnomaly?: boolean
+  modelVersion?: string
+  createdAt?: string
+}

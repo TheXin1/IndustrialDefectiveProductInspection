@@ -24,9 +24,9 @@
     <h3 style="margin-top: 0;">运行状态</h3>
     <el-descriptions :column="2" border>
       <el-descriptions-item label="推理服务">{{ inferenceStatusText }}</el-descriptions-item>
-      <el-descriptions-item label="边缘节点">{{ nodeStatusText }}</el-descriptions-item>
-      <el-descriptions-item label="报警策略">{{ alertPolicyText }}</el-descriptions-item>
-      <el-descriptions-item label="数据同步">{{ dataSyncText }}</el-descriptions-item>
+      <el-descriptions-item label="在线节点">{{ nodeStatusText }}</el-descriptions-item>
+<!--      <el-descriptions-item label="报警策略">{{ alertPolicyText }}</el-descriptions-item>-->
+<!--      <el-descriptions-item label="数据同步">{{ dataSyncText }}</el-descriptions-item>-->
     </el-descriptions>
   </div>
 </template>
@@ -50,8 +50,8 @@ const alertCountText = computed(() => formatNumber(overview.value?.alertCount))
 const modelVersionText = computed(() => overview.value?.modelVersion || '--')
 const inferenceStatusText = computed(() => overview.value?.inferenceStatus || '--')
 const nodeStatusText = computed(() => overview.value?.nodeStatus || '--')
-const alertPolicyText = computed(() => overview.value?.alertPolicy || '--')
-const dataSyncText = computed(() => overview.value?.dataSync || '--')
+// const alertPolicyText = computed(() => overview.value?.alertPolicy || '--')
+// const dataSyncText = computed(() => overview.value?.dataSync || '--')
 
 const formatNumber = (value?: number) => {
   if (value === null || value === undefined) return '--'

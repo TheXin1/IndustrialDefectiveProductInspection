@@ -5,6 +5,8 @@ import RegisterView from '../views/RegisterView.vue'
 import AppLayout from '../layouts/AppLayout.vue'
 import DashboardView from '../views/DashboardView.vue'
 import DetectView from '../views/DetectView.vue'
+import RealtimeView from '../views/RealtimeView.vue'
+import RecordsView from '../views/RecordsView.vue'
 import PlaceholderView from '../views/PlaceholderView.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -17,8 +19,8 @@ const routes: RouteRecordRaw[] = [
       { path: '', redirect: '/dashboard' },
       { path: 'dashboard', component: DashboardView },
       { path: 'detect', component: DetectView },
-      { path: 'realtime', component: PlaceholderView, meta: { title: '实时监控' } },
-      { path: 'records', component: PlaceholderView, meta: { title: '检测记录' } },
+      { path: 'realtime', component: RealtimeView, meta: { title: '实时监控' } },
+      { path: 'records', component: RecordsView, meta: { title: '检测记录' } },
       { path: 'reports', component: PlaceholderView, meta: { title: '报表统计' } },
       { path: 'model', component: PlaceholderView, meta: { title: '模型管理' } },
       { path: 'dataset', component: PlaceholderView, meta: { title: '数据集管理' } },

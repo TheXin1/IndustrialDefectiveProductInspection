@@ -37,8 +37,10 @@ public class DashboardServiceImpl implements DashboardService {
         overview.setModelVersion(modelVersion);
         overview.setInferenceStatus(inferenceStatus);
         overview.setNodeStatus(nodeStatus);
+/*
         overview.setAlertPolicy("启用");
         overview.setDataSync("正常");
+*/
         return overview;
     }
 

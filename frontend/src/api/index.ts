@@ -7,7 +7,9 @@ import type {
   InferenceDetectResponse,
   ChatSession,
   ChatSessionSummary,
-  DashboardOverview
+  DashboardOverview,
+  InspectionRecord,
+  PageResult
 } from './types'
 
 export const api = {
@@ -37,6 +39,11 @@ export const api = {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
   },
+  chatDetect(form: FormData) {
+    return request.post<InferenceDetectResponse>('/v1/inference/chat', form, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+  },
   inferenceHealth() {
     return request.get<Record<string, unknown>>('/v1/inference/health')
   },
@@ -45,6 +52,17 @@ export const api = {
   },
   dashboardOverview() {
     return request.get<DashboardOverview>('/v1/dashboard/overview')
+  },
+  recordsList(params: {
+    userId?: number
+    hasAnomaly?: number
+    keyword?: string
+    startAt?: string
+    endAt?: string
+    page?: number
+    size?: number
+  }) {
+    return request.get<PageResult<InspectionRecord>>('/v1/records', { params })
   },
   chatList(userId: number) {
     return request.get<ChatSessionSummary[]>('/v1/chat/sessions', { params: { userId } })

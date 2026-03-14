@@ -11,75 +11,140 @@
         </div>
       </div>
 
-      <el-form label-width="120px">
-        <div class="upload-grid">
-          <el-form-item label="待检图片">
-            <div class="upload-card" @click="triggerImage">
-              <input ref="imageInput" type="file" accept="image/*" class="hidden-input" @change="onImageChange" />
-              <div v-if="preview" class="upload-preview">
-                <img :src="preview" alt="待检图片" />
-              </div>
-              <div v-else class="upload-placeholder">点击上传待检图片</div>
+      <el-tabs v-model="activeTab" class="detect-tabs">
+        <el-tab-pane label="单张检测" name="single">
+          <el-form label-width="120px">
+            <div class="upload-grid">
+              <el-form-item label="待检图片">
+                <div class="upload-card" @click="triggerImage">
+                  <input ref="imageInput" type="file" accept="image/*" class="hidden-input" @change="onImageChange" />
+                  <button v-if="preview" type="button" class="clear-btn" @click.stop="clearImage">清除</button>
+                  <div v-if="preview" class="upload-preview">
+                    <img :src="preview" alt="待检图片" />
+                  </div>
+                  <div v-else class="upload-placeholder">点击上传待检图片</div>
+                </div>
+              </el-form-item>
+              <el-form-item label="正常参考图">
+                <div class="upload-card" @click="triggerNormal">
+                  <input ref="normalInput" type="file" accept="image/*" class="hidden-input" @change="onNormalChange" />
+                  <button v-if="normalPreview" type="button" class="clear-btn" @click.stop="clearNormal">清除</button>
+                  <div v-if="normalPreview" class="upload-preview">
+                    <img :src="normalPreview" alt="参考图片" />
+                  </div>
+                  <div v-else class="upload-placeholder">点击上传正常参考图</div>
+                </div>
+              </el-form-item>
             </div>
-          </el-form-item>
-          <el-form-item label="正常参考图">
-            <div class="upload-card" @click="triggerNormal">
-              <input ref="normalInput" type="file" accept="image/*" class="hidden-input" @change="onNormalChange" />
-              <div v-if="normalPreview" class="upload-preview">
-                <img :src="normalPreview" alt="参考图片" />
-              </div>
-              <div v-else class="upload-placeholder">点击上传正常参考图</div>
-            </div>
-          </el-form-item>
-        </div>
 
-        <div class="param-grid">
-          <el-form-item label="提示词">
-            <el-input v-model="prompt" placeholder="Describe this image." />
-          </el-form-item>
-          <el-form-item label="max_tgt_len">
-            <el-input-number v-model="maxTgtLen" :min="1" :max="512" />
-          </el-form-item>
-          <el-form-item label="top_p">
-            <el-input-number v-model="topP" :min="0" :max="1" :step="0.01" />
-          </el-form-item>
-          <el-form-item label="temperature">
-            <el-input-number v-model="temperature" :min="0" :max="2" :step="0.1" />
-          </el-form-item>
-        </div>
-
-        <el-button type="primary" :loading="loadingDetect" @click="onDetect">开始检测</el-button>
-      </el-form>
-
-      <div class="result-block">
-        <h3>检测结果</h3>
-        <div v-if="result">
-          <div class="result-meta">
-            <div class="meta-card">
-              <div class="subtle">描述</div>
-              <div class="meta-value">{{ result.data.description }}</div>
+            <div class="param-grid">
+              <el-form-item label="max_tgt_len">
+                <el-input-number v-model="maxTgtLen" :min="1" :max="512" />
+              </el-form-item>
+              <el-form-item label="top_p">
+                <el-input-number v-model="topP" :min="0" :max="1" :step="0.01" />
+              </el-form-item>
+              <el-form-item label="temperature">
+                <el-input-number v-model="temperature" :min="0" :max="2" :step="0.1" />
+              </el-form-item>
             </div>
-            <div class="meta-card">
-              <div class="subtle">异常状态</div>
-              <div class="meta-value">
-                <span class="status-pill" :class="result.data.has_anomaly ? 'danger' : 'ok'">
-                  {{ result.data.has_anomaly ? '异常' : '正常' }}
-                </span>
+
+            <el-button type="primary" :loading="loadingDetect" @click="onDetect">开始检测</el-button>
+          </el-form>
+
+          <div class="result-block">
+            <h3>检测结果</h3>
+            <div v-if="result">
+              <div class="result-meta">
+                <div class="meta-card">
+                  <div class="subtle">描述</div>
+                  <div class="meta-value">{{ result.data.description }}</div>
+                </div>
+                <div class="meta-card">
+                  <div class="subtle">异常状态</div>
+                  <div class="meta-value">
+                    <span class="status-pill" :class="result.data.has_anomaly ? 'danger' : 'ok'">
+                      {{ result.data.has_anomaly ? '异常' : '正常' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="image-grid">
+                <div class="image-box">
+                  <div class="subtle">缺陷位置图</div>
+                  <div class="image-frame">
+                    <img v-if="heatmap" :src="heatmap" alt="缺陷位置图" />
+                    <div v-else class="image-empty">暂无缺陷位置图</div>
+                  </div>
+                </div>
               </div>
             </div>
+            <div v-else class="subtle">暂无检测结果</div>
           </div>
-          <div class="image-grid">
-            <div class="image-box">
-              <div class="subtle">缺陷位置图</div>
-              <div class="image-frame">
-                <img v-if="heatmap" :src="heatmap" alt="缺陷位置图" />
-                <div v-else class="image-empty">暂无缺陷位置图</div>
+        </el-tab-pane>
+
+        <el-tab-pane label="批量检测" name="batch">
+          <el-form label-width="120px">
+            <el-form-item label="待检图片">
+              <div class="upload-card" @click="triggerBatch">
+                <input
+                  ref="batchInput"
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  class="hidden-input"
+                  @change="onBatchChange"
+                />
+                <button v-if="batchPreviews.length" type="button" class="clear-btn" @click.stop="clearBatch">清空</button>
+                <div v-if="batchPreviews.length" class="upload-preview-grid">
+                  <img v-for="(item, idx) in batchPreviews" :key="idx" :src="item" alt="待检图片" />
+                </div>
+                <div v-else class="upload-placeholder">点击上传多张图片</div>
               </div>
+            </el-form-item>
+
+            <div class="param-grid">
+              <el-form-item label="max_tgt_len">
+                <el-input-number v-model="maxTgtLen" :min="1" :max="512" />
+              </el-form-item>
+              <el-form-item label="top_p">
+                <el-input-number v-model="topP" :min="0" :max="1" :step="0.01" />
+              </el-form-item>
+              <el-form-item label="temperature">
+                <el-input-number v-model="temperature" :min="0" :max="2" :step="0.1" />
+              </el-form-item>
             </div>
+
+            <el-button type="primary" :loading="batchLoading" @click="onBatchDetect">开始批量检测</el-button>
+          </el-form>
+
+          <div class="result-block">
+            <h3>批量检测结果</h3>
+            <div v-if="batchResults.length">
+              <div class="result-meta">
+                <div class="meta-card">
+                  <div class="subtle">检测总数</div>
+                  <div class="meta-value">{{ batchResults.length }}</div>
+                </div>
+                <div class="meta-card">
+                  <div class="subtle">异常数量</div>
+                  <div class="meta-value">{{ batchAnomalyCount }}</div>
+                </div>
+              </div>
+              <div v-if="batchAnomalyItems.length" class="image-grid">
+                <div class="image-box" v-for="item in batchAnomalyItems" :key="item.name">
+                  <div class="subtle">{{ item.name }}</div>
+                  <div class="image-frame">
+                    <img :src="item.preview" alt="异常图片" />
+                  </div>
+                </div>
+              </div>
+              <div v-else class="subtle">未检测到异常图片</div>
+            </div>
+            <div v-else class="subtle">暂无检测结果</div>
           </div>
-        </div>
-        <div v-else class="subtle">暂无检测结果</div>
-      </div>
+        </el-tab-pane>
+      </el-tabs>
     </section>
 
     <section class="panel chat-panel">
@@ -157,7 +222,7 @@
       <div class="chat-input">
         <el-input
           v-model="chatInput"
-          placeholder="输入问题，例如：缺陷是什么？可能原因？"
+          placeholder="输入问题，例如：缺陷是什么？"
           @keyup.enter="onAsk"
           :disabled="loadingChat"
         />
@@ -180,19 +245,29 @@ import type {
 import { useAuthStore } from '../stores/auth'
 
 type ChatRole = 'user' | 'assistant'
+type BatchDetectItem = {
+  name: string
+  preview: string
+  description: string
+  hasAnomaly: boolean
+  heatmap?: string | null
+}
+const DEFAULT_PROMPT = '该图片是否存在异常'
+const DEFAULT_ASSISTANT_TEXT = '请先上传图片并执行检测，我会基于图像回答问题。'
 
 const defaultAssistantMessage = (): ChatMessage => ({
   role: 'assistant',
-  content: '请先上传图片并执行检测，我会基于图像回答问题。',
+  content: DEFAULT_ASSISTANT_TEXT,
   time: new Date().toLocaleTimeString()
 })
 
 const auth = useAuthStore()
 const userId = computed(() => auth.user?.id || null)
+const activeTab = ref<'single' | 'batch'>('single')
 
 const imageFile = ref<File | null>(null)
 const normalFile = ref<File | null>(null)
-const prompt = ref('Describe this image.')
+const basePrompt = ref(DEFAULT_PROMPT)
 const maxTgtLen = ref(128)
 const topP = ref(0.01)
 const temperature = ref(1)
@@ -210,6 +285,7 @@ const normalDataUrl = ref<string | null>(null)
 
 const imageInput = ref<HTMLInputElement | null>(null)
 const normalInput = ref<HTMLInputElement | null>(null)
+const batchInput = ref<HTMLInputElement | null>(null)
 
 const chatInput = ref('')
 const chatBody = ref<HTMLElement | null>(null)
@@ -226,6 +302,13 @@ const renameTitle = ref('')
 const historyOptions = computed(() => {
   return [...sessions.value].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
 })
+
+const batchFiles = ref<File[]>([])
+const batchPreviews = ref<string[]>([])
+const batchResults = ref<BatchDetectItem[]>([])
+const batchLoading = ref(false)
+const batchAnomalyItems = computed(() => batchResults.value.filter((item) => item.hasAnomaly))
+const batchAnomalyCount = computed(() => batchAnomalyItems.value.length)
 
 onMounted(async () => {
   await loadHistory()
@@ -252,6 +335,16 @@ const onImageChange = (e: Event) => {
   }
 }
 
+const clearImage = async () => {
+  imageFile.value = null
+  preview.value = null
+  imageDataUrl.value = ''
+  if (imageInput.value) {
+    imageInput.value.value = ''
+  }
+  await syncSession()
+}
+
 const onNormalChange = (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0] || null
   normalFile.value = file
@@ -264,6 +357,131 @@ const onNormalChange = (e: Event) => {
   }
 }
 
+const clearNormal = async () => {
+  normalFile.value = null
+  normalPreview.value = null
+  normalDataUrl.value = ''
+  if (normalInput.value) {
+    normalInput.value.value = ''
+  }
+  await syncSession()
+}
+
+const triggerBatch = () => batchInput.value?.click()
+
+const revokeBatchPreviews = () => {
+  batchPreviews.value.forEach((url) => URL.revokeObjectURL(url))
+}
+
+const onBatchChange = (e: Event) => {
+  const files = Array.from((e.target as HTMLInputElement).files || [])
+  revokeBatchPreviews()
+  batchFiles.value = files
+  batchPreviews.value = files.map((file) => URL.createObjectURL(file))
+  batchResults.value = []
+}
+
+const clearBatch = () => {
+  revokeBatchPreviews()
+  batchFiles.value = []
+  batchPreviews.value = []
+  batchResults.value = []
+  if (batchInput.value) {
+    batchInput.value.value = ''
+  }
+}
+
+const detectWithFile = async (file: File, customPrompt?: string) => {
+  const form = new FormData()
+  form.append('image', file)
+  form.append('prompt', customPrompt || basePrompt.value)
+  form.append('max_tgt_len', String(maxTgtLen.value))
+  form.append('top_p', String(topP.value))
+  form.append('temperature', String(temperature.value))
+  if (userId.value) {
+    form.append('userId', String(userId.value))
+  }
+  const res = await api.detect(form)
+  if (!res.success) {
+    throw new Error(res.message || 'detect_failed')
+  }
+  return res.data
+}
+
+const normalizeAnomalyFlag = (description: string, fallback?: boolean) => {
+  const text = (description || '').toLowerCase()
+  if (!text.trim()) return Boolean(fallback)
+
+  const negativePatterns = [
+    /无(明显)?(异常|缺陷|瑕疵|不良)/,
+    /没有(明显)?(异常|缺陷|瑕疵|不良)/,
+    /没有任何(异常|缺陷|瑕疵|不良)/,
+    /未(见|发现)(明显)?(异常|缺陷|瑕疵|不良)/,
+    /未发现任何(异常|缺陷|瑕疵|不良)/,
+    /不存在(异常|缺陷|瑕疵|不良)/,
+    /(正常|良品|无异常)/,
+    /no\s+(anomaly|defect|abnormality)/,
+    /\bnormal\b/
+  ]
+
+  if (negativePatterns.some((pattern) => pattern.test(text))) {
+    return false
+  }
+
+  const positivePatterns = [/异常/, /缺陷/, /瑕疵/, /不良/, /anomaly/, /defect/, /abnormal/]
+  if (positivePatterns.some((pattern) => pattern.test(text))) {
+    return true
+  }
+
+  return Boolean(fallback)
+}
+
+const buildPromptForQuestion = (question: string) => {
+  const historyLines = messages.value
+    .filter((item) => item.content && item.content !== DEFAULT_ASSISTANT_TEXT)
+    .slice(-8)
+    .map((item) => `${item.role === 'user' ? '用户' : '助手'}: ${item.content}`)
+    .join('\n')
+  const historyBlock = historyLines ? `历史对话：\n${historyLines}\n` : ''
+  return `${DEFAULT_PROMPT}\n${historyBlock}当前问题：${question}`
+}
+
+const onBatchDetect = async () => {
+  if (!batchFiles.value.length) {
+    ElMessage.warning('请先选择批量图片')
+    return
+  }
+  batchLoading.value = true
+  batchResults.value = []
+  let failed = 0
+  try {
+    for (let i = 0; i < batchFiles.value.length; i += 1) {
+      const file = batchFiles.value[i]
+      const previewUrl = batchPreviews.value[i] || URL.createObjectURL(file)
+      try {
+        const data = await detectWithFile(file)
+        const hasAnomaly = normalizeAnomalyFlag(data.data.description, data.data.has_anomaly)
+        batchResults.value.push({
+          name: file.name,
+          preview: previewUrl,
+          description: data.data.description,
+          hasAnomaly,
+          heatmap: data.data.localization_image_base64
+            ? `data:image/png;base64,${data.data.localization_image_base64}`
+            : null
+        })
+      } catch (err) {
+        failed += 1
+      }
+    }
+  } finally {
+    batchLoading.value = false
+    if (failed > 0) {
+      ElMessage.error(`有 ${failed} 张图片检测失败`)
+    }
+  }
+}
+
 const callDetect = async (customPrompt?: string) => {
   ensureFilesFromDataUrl()
   if (!imageFile.value) {
@@ -273,11 +491,37 @@ const callDetect = async (customPrompt?: string) => {
   const form = new FormData()
   form.append('image', imageFile.value)
   if (normalFile.value) form.append('normal_image', normalFile.value)
-  form.append('prompt', customPrompt || prompt.value)
+  form.append('prompt', customPrompt || basePrompt.value)
   form.append('max_tgt_len', String(maxTgtLen.value))
   form.append('top_p', String(topP.value))
   form.append('temperature', String(temperature.value))
+  if (userId.value) {
+    form.append('userId', String(userId.value))
+  }
   const res = await api.detect(form)
+  if (!res.success) {
+    throw new Error(res.message || 'detect_failed')
+  }
+  return res.data
+}
+
+const callChatDetect = async (customPrompt?: string) => {
+  ensureFilesFromDataUrl()
+  if (!imageFile.value) {
+    ElMessage.warning('请先上传图片并完成检测')
+    return null
+  }
+  const form = new FormData()
+  form.append('image', imageFile.value)
+  if (normalFile.value) form.append('normal_image', normalFile.value)
+  form.append('prompt', customPrompt || basePrompt.value)
+  form.append('max_tgt_len', String(maxTgtLen.value))
+  form.append('top_p', String(topP.value))
+  form.append('temperature', String(temperature.value))
+  if (userId.value) {
+    form.append('userId', String(userId.value))
+  }
+  const res = await api.chatDetect(form)
   if (!res.success) {
     throw new Error(res.message || 'detect_failed')
   }
@@ -289,6 +533,7 @@ const onDetect = async () => {
   try {
     const data = await callDetect()
     if (!data) return
+    data.data.has_anomaly = normalizeAnomalyFlag(data.data.description, data.data.has_anomaly)
     result.value = data
     heatmap.value = `data:image/png;base64,${data.data.localization_image_base64}`
     const answer = data.data.description
@@ -319,8 +564,9 @@ const onAsk = async () => {
   loadingChat.value = true
   await scrollChat()
   try {
-    const data = await callDetect(question)
+    const data = await callChatDetect(buildPromptForQuestion(question))
     if (!data) return
+    data.data.has_anomaly = normalizeAnomalyFlag(data.data.description, data.data.has_anomaly)
     result.value = data
     heatmap.value = `data:image/png;base64,${data.data.localization_image_base64}`
     const answer = data.data.description
@@ -349,6 +595,8 @@ const onSelectHistory = async (id: number) => {
     ElMessage.error(res.message || '加载历史失败')
     return
   }
+  //选中后要更新！！！
+  activeSessionId.value = id
   applySession(res.data)
   historyDrawer.value = false
 }
@@ -440,6 +688,7 @@ const confirmRename = async () => {
 
 const syncSession = async (latestUserQuestion?: string) => {
   if (!userId.value) return
+  const sessionAtStart = activeSessionId.value
   const payload = buildPayload()
   if (payload.title === '新对话' && latestUserQuestion) {
     payload.title = latestUserQuestion.slice(0, 16)
@@ -447,6 +696,10 @@ const syncSession = async (latestUserQuestion?: string) => {
   if (!activeSessionId.value) {
     const created = await api.chatCreate(payload)
     if (created.success) {
+      //防止反复切换回就会话
+      if (activeSessionId.value !== sessionAtStart) {
+        return
+      }
       activeSessionId.value = created.data.id
       await loadHistory(created.data.id)
     }
@@ -456,6 +709,9 @@ const syncSession = async (latestUserQuestion?: string) => {
   if (!res.success) {
     ElMessage.error(res.message || '保存失败')
   } else {
+    if (activeSessionId.value !== sessionAtStart) {
+      return
+    }
     await loadHistory(activeSessionId.value)
   }
 }
@@ -464,12 +720,12 @@ const buildPayload = (title?: string): Partial<ChatSession> => {
   return {
     userId: userId.value || undefined,
     title: title || sessions.value.find((s) => s.id === activeSessionId.value)?.title || '新对话',
-    prompt: prompt.value,
+    prompt: basePrompt.value,
     maxTgtLen: maxTgtLen.value,
     topP: topP.value,
     temperature: temperature.value,
-    imageDataUrl: imageDataUrl.value || undefined,
-    normalDataUrl: normalDataUrl.value || undefined,
+    imageDataUrl: imageDataUrl.value !== null ? imageDataUrl.value : undefined,
+    normalDataUrl: normalDataUrl.value !== null ? normalDataUrl.value : undefined,
     result: result.value || undefined,
     messages: [...messages.value]
   }
@@ -479,7 +735,7 @@ const buildPayloadFromSession = (session: ChatSession, title: string): Partial<C
   return {
     userId: session.userId,
     title,
-    prompt: session.prompt,
+    prompt: DEFAULT_PROMPT,
     maxTgtLen: session.maxTgtLen,
     topP: session.topP,
     temperature: session.temperature,
@@ -492,12 +748,14 @@ const buildPayloadFromSession = (session: ChatSession, title: string): Partial<C
 
 const applySession = (session: ChatSession) => {
   messages.value = session.messages?.length ? [...session.messages] : [defaultAssistantMessage()]
-  prompt.value = session.prompt || prompt.value
+  basePrompt.value = DEFAULT_PROMPT
   maxTgtLen.value = session.maxTgtLen || 128
   topP.value = session.topP ?? 0.01
   temperature.value = session.temperature ?? 1
   imageDataUrl.value = session.imageDataUrl || null
   normalDataUrl.value = session.normalDataUrl || null
+  imageFile.value = null
+  normalFile.value = null
   result.value = (session.result as InferenceDetectResponse) || null
   preview.value = imageDataUrl.value
   normalPreview.value = normalDataUrl.value
@@ -616,6 +874,7 @@ const dataUrlToFile = (dataUrl: string, filename: string): File => {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -630,8 +889,39 @@ const dataUrlToFile = (dataUrl: string, filename: string): File => {
   border-radius: 10px;
 }
 
+.upload-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.upload-preview-grid img {
+  width: 100%;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
 .upload-placeholder {
   color: #64748b;
+}
+
+.clear-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #0f172a;
+  background: rgba(148, 163, 184, 0.2);
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background: rgba(148, 163, 184, 0.35);
 }
 
 .param-grid {

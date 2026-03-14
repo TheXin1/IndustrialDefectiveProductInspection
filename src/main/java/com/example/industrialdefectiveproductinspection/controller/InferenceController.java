@@ -50,4 +50,17 @@ public class InferenceController {
         inspectionRecordService.recordDetection(userId, "upload", response);
         return ApiResponse.ok(response);
     }
+
+    @PostMapping(value = "/chat", consumes = "multipart/form-data")
+    public ApiResponse<InferenceDetectResponse> chat(
+            @RequestPart("image") MultipartFile image,
+            @RequestPart(value = "normal_image", required = false) MultipartFile normalImage,
+            @RequestParam(value = "prompt", required = false) String prompt,
+            @RequestParam(value = "max_tgt_len", required = false) Integer maxTgtLen,
+            @RequestParam(value = "top_p", required = false) Double topP,
+            @RequestParam(value = "temperature", required = false) Double temperature,
+            @RequestParam(value = "userId", required = false) Long userId) {
+        InferenceDetectResponse response = inferenceService.detect(image, normalImage, prompt, maxTgtLen, topP, temperature);
+        return ApiResponse.ok(response);
+    }
 }

@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public User getUser(Long id) {
         User user = userMapper.selectById(id);
         if (user == null) {
-            throw new ServiceException("user_not_found");
+            throw new ServiceException("角色未找到");
         }
         return user;
     }
@@ -43,10 +43,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User createUser(CreateUserRequest request) {
         if (request == null || request.getUsername() == null || request.getPassword() == null) {
-            throw new ServiceException("username_password_required");
+            throw new ServiceException("无账号密码");
         }
         if (userMapper.selectByUsername(request.getUsername()) != null) {
-            throw new ServiceException("username_exists");
+            throw new ServiceException("用户名存在");
         }
         User user = new User();
         user.setUsername(request.getUsername());
@@ -67,10 +67,10 @@ public class UserServiceImpl implements UserService {
     public User updateUser(Long id, UpdateUserRequest request) {
         User existing = userMapper.selectById(id);
         if (existing == null) {
-            throw new ServiceException("user_not_found");
+            throw new ServiceException("角色未找到");
         }
         if (request == null) {
-            throw new ServiceException("invalid_request");
+            throw new ServiceException("非法请求");
         }
         User toUpdate = new User();
         toUpdate.setId(id);

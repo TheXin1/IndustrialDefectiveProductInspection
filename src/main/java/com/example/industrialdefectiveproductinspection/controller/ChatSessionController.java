@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/chat/sessions")
 public class ChatSessionController {
+
     private final ChatSessionService chatSessionService;
 
     public ChatSessionController(ChatSessionService chatSessionService) {

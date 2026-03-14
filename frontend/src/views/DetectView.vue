@@ -236,6 +236,7 @@ const openHistory = async () => {
   await refreshHistoryList()
 }
 
+//监听并展示图片
 const triggerImage = () => imageInput.value?.click()
 const triggerNormal = () => normalInput.value?.click()
 

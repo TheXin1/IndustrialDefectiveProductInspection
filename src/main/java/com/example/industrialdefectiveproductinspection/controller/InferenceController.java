@@ -12,6 +12,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/inference")
 public class InferenceController {
+
     private final InferenceService inferenceService;
     private final InspectionRecordService inspectionRecordService;
 

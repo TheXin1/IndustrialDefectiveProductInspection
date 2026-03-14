@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class InspectionRecordServiceImpl implements InspectionRecordService {
+
     private final InspectionRecordMapper inspectionRecordMapper;
 
     public InspectionRecordServiceImpl(InspectionRecordMapper inspectionRecordMapper) {

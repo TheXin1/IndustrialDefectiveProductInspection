@@ -57,7 +57,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     public ChatSessionResponse get(Long id) {
         ChatSession session = chatSessionMapper.selectById(id);
         if (session == null) {
-            throw new ServiceException("chat_session_not_found");
+            throw new ServiceException("未找到对话数据");
         }
         List<ChatMessage> messages = chatMessageMapper.selectBySessionId(id);
         return toResponse(session, messages);
@@ -66,7 +66,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
     @Override
     public List<ChatSessionSummary> listByUser(Long userId) {
         if (userId == null) {
-            throw new ServiceException("user_id_required");
+            throw new ServiceException("非法用户Id");
         }
         return chatSessionMapper.selectSummaryByUserId(userId);
     }
@@ -102,7 +102,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
     private ChatSession toEntity(ChatSessionRequest request) {
         if (request == null) {
-            throw new ServiceException("invalid_request");
+            throw new ServiceException("非法请求");
         }
         ChatSession session = new ChatSession();
         session.setUserId(request.getUserId());
@@ -164,7 +164,7 @@ public class ChatSessionServiceImpl implements ChatSessionService {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            throw new ServiceException("json_serialize_failed");
+            throw new ServiceException("json序列化错误");
         }
     }
 

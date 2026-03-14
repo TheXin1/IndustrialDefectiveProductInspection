@@ -9,6 +9,7 @@ import java.util.List;
 
 @Service
 public class PermissionServiceImpl implements PermissionService {
+
     private final PermissionMapper permissionMapper;
 
     public PermissionServiceImpl(PermissionMapper permissionMapper) {

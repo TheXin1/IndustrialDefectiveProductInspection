@@ -20,6 +20,7 @@ import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
     private final UserRoleMapper userRoleMapper;
@@ -36,17 +37,17 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public LoginResponse login(LoginRequest request) {
         if (request == null || request.getUsername() == null || request.getPassword() == null) {
-            throw new ServiceException("username_password_required");
+            throw new ServiceException("请输入用户名与密码");
         }
         User user = userMapper.selectByUsername(request.getUsername());
         if (user == null) {
-            throw new ServiceException("invalid_credentials");
+            throw new ServiceException("用户名错误");
         }
         if (user.getStatus() != null && user.getStatus() == 0) {
-            throw new ServiceException("user_disabled");
+            throw new ServiceException("用户状态异常");
         }
         if (!PasswordUtils.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new ServiceException("invalid_credentials");
+            throw new ServiceException("密码错误");
         }
         userMapper.updateLastLogin(user.getId(), LocalDateTime.now());
         List<Role> roles = userMapper.selectRolesByUserId(user.getId());
@@ -63,10 +64,10 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public User register(RegisterRequest request) {
         if (request == null || request.getUsername() == null || request.getPassword() == null) {
-            throw new ServiceException("username_password_required");
+            throw new ServiceException("请输入用户名与密码");
         }
         if (userMapper.selectByUsername(request.getUsername()) != null) {
-            throw new ServiceException("username_exists");
+            throw new ServiceException("用户已存在");
         }
         Role defaultRole = roleMapper.selectByCode("USER");
         if (defaultRole == null) {

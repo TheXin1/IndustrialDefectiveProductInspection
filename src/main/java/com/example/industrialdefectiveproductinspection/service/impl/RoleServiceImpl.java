@@ -15,6 +15,7 @@ import java.util.List;
 
 @Service
 public class RoleServiceImpl implements RoleService {
+
     private final RoleMapper roleMapper;
     private final RolePermissionMapper rolePermissionMapper;
 
@@ -32,7 +33,7 @@ public class RoleServiceImpl implements RoleService {
     public Role getRole(Long id) {
         Role role = roleMapper.selectById(id);
         if (role == null) {
-            throw new ServiceException("role_not_found");
+            throw new ServiceException("角色未找到");
         }
         return role;
     }
@@ -41,10 +42,10 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public Role createRole(CreateRoleRequest request) {
         if (request == null || request.getCode() == null || request.getName() == null) {
-            throw new ServiceException("role_code_name_required");
+            throw new ServiceException("需要角色名");
         }
         if (roleMapper.selectByCode(request.getCode()) != null) {
-            throw new ServiceException("role_code_exists");
+            throw new ServiceException("角色名不存在");
         }
         Role role = new Role();
         role.setCode(request.getCode());
@@ -63,10 +64,10 @@ public class RoleServiceImpl implements RoleService {
     public Role updateRole(Long id, UpdateRoleRequest request) {
         Role existing = roleMapper.selectById(id);
         if (existing == null) {
-            throw new ServiceException("role_not_found");
+            throw new ServiceException("角色未找到");
         }
         if (request == null) {
-            throw new ServiceException("invalid_request");
+            throw new ServiceException("非法请求");
         }
         Role toUpdate = new Role();
         toUpdate.setId(id);
@@ -87,10 +88,10 @@ public class RoleServiceImpl implements RoleService {
     public void deleteRole(Long id) {
         Role existing = roleMapper.selectById(id);
         if (existing == null) {
-            throw new ServiceException("role_not_found");
+            throw new ServiceException("角色未找到");
         }
         if (existing.getBuiltIn() != null && existing.getBuiltIn() == 1) {
-            throw new ServiceException("built_in_role_cannot_delete");
+            throw new ServiceException("root角色无法删除");
         }
         rolePermissionMapper.deleteByRoleId(id);
         roleMapper.deleteById(id);

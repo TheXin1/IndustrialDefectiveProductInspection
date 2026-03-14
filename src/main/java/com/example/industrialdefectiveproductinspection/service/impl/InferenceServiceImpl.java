@@ -49,7 +49,7 @@ public class InferenceServiceImpl implements InferenceService {
                                           Double topP,
                                           Double temperature) {
         if (image == null || image.isEmpty()) {
-            throw new ServiceException("image_required");
+            throw new ServiceException("未检测到图像");
         }
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("image", toResource(image));
@@ -76,11 +76,11 @@ public class InferenceServiceImpl implements InferenceService {
             ResponseEntity<InferenceDetectResponse> response = restTemplate.postForEntity(
                     url("/api/v1/detect"), entity, InferenceDetectResponse.class);
             if (response.getBody() == null) {
-                throw new ServiceException("inference_empty_response");
+                throw new ServiceException("无响应数据");
             }
             return response.getBody();
         } catch (Exception ex) {
-            throw new ServiceException("inference_service_unavailable");
+            throw new ServiceException("推理服务错误");
         }
     }
 
@@ -88,7 +88,7 @@ public class InferenceServiceImpl implements InferenceService {
         try {
             return restTemplate.getForObject(url(path), Map.class);
         } catch (Exception ex) {
-            throw new ServiceException("inference_service_unavailable");
+            throw new ServiceException("服务不可用");
         }
     }
 
@@ -112,7 +112,7 @@ public class InferenceServiceImpl implements InferenceService {
                 }
             };
         } catch (IOException ex) {
-            throw new ServiceException("file_read_failed");
+            throw new ServiceException("图片读取失败");
         }
     }
 }

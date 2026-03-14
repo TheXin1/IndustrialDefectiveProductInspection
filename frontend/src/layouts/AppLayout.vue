@@ -3,7 +3,7 @@
     <aside class="app-sidebar">
       <div>
         <div style="font-weight: 700; font-size: 18px;">工业残次品检测</div>
-        <div class="subtle">Cloud + Edge 智能质检</div>
+        <div class="subtle">AGPT智能质检</div>
       </div>
       <SidebarMenu />
     </aside>

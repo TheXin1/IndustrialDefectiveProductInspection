@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface ChatMessageMapper {
+
     int insertBatch(@Param("sessionId") Long sessionId, @Param("messages") List<ChatMessage> messages);
 
     int deleteBySessionId(@Param("sessionId") Long sessionId);

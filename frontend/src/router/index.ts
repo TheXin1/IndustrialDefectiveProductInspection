@@ -32,11 +32,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'access/users', component: UsersView, meta: { title: '用户管理' } },
       { path: 'access/roles', component: RolesView, meta: { title: '角色管理' } },
       { path: 'access/permissions', component: PermissionsView, meta: { title: '权限管理' } },
-      { path: 'model', component: PlaceholderView, meta: { title: '模型管理' } },
-      { path: 'dataset', component: PlaceholderView, meta: { title: '数据集管理' } },
-      { path: 'audit', component: AuditView, meta: { title: '审计日志' } },
-      { path: 'system', component: PlaceholderView, meta: { title: '系统设置' } },
-      { path: 'integration', component: PlaceholderView, meta: { title: '集成管理' } }
+      { path: 'audit', component: AuditView, meta: { title: '复审日志' } },
     ]
   }
 ]

@@ -33,7 +33,7 @@ const menuConfig: MenuItem[] = [
   { label: '用户管理', path: '/access/users', permission: 'user_access' },
   { label: '角色管理', path: '/access/roles', permission: 'user_access' },
   { label: '权限管理', path: '/access/permissions', permission: 'user_access' },
-  { label: '审计日志', path: '/audit', permission: 'audit' },
+  { label: '复审日志', path: '/audit', permission: 'audit' },
   { label: '个人设置', path: '/settings' },
 ]
 

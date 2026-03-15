@@ -3,8 +3,7 @@
     <section class="panel">
       <div class="audit-header">
         <div>
-          <h2 style="margin: 0;">审计复审</h2>
-          <div class="subtle">对检测记录进行人工复审，支持驳回进入实时报警</div>
+          <h2 style="margin: 0;">审计日志</h2>
         </div>
         <div class="header-actions">
           <el-input v-model="keyword" placeholder="搜索描述关键词" clearable class="search-input" />

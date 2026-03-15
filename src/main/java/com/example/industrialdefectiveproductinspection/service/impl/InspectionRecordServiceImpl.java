@@ -6,10 +6,12 @@ import com.example.industrialdefectiveproductinspection.dto.InspectionRecordResp
 import com.example.industrialdefectiveproductinspection.dto.PageResult;
 import com.example.industrialdefectiveproductinspection.mapper.InspectionRecordMapper;
 import com.example.industrialdefectiveproductinspection.service.InspectionRecordService;
+import com.example.industrialdefectiveproductinspection.util.Utils;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class InspectionRecordServiceImpl implements InspectionRecordService {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 
     private final InspectionRecordMapper inspectionRecordMapper;
 
@@ -33,7 +36,7 @@ public class InspectionRecordServiceImpl implements InspectionRecordService {
         record.setUserId(userId);
         record.setSourceType(sourceType == null ? "upload" : sourceType);
         record.setDescription(response.getData().getDescription());
-        record.setHasAnomaly(Boolean.TRUE.equals(response.getData().getHasAnomaly()) ? 1 : 0);
+        record.setHasAnomaly(response.getData().getHasAnomaly() ? 1:0 );
         inspectionRecordMapper.insert(record);
     }
 
@@ -72,4 +75,6 @@ public class InspectionRecordServiceImpl implements InspectionRecordService {
         response.setCreatedAt(record.getCreatedAt() == null ? null : record.getCreatedAt().format(FORMATTER));
         return response;
     }
+
+
 }

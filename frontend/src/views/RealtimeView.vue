@@ -3,7 +3,6 @@
     <section class="panel realtime-hero">
       <div class="hero-left">
         <div class="hero-title">实时监控</div>
-        <div class="hero-sub">全链路掌握推理服务、检测趋势与异常告警</div>
         <div class="hero-meta">
           <span class="badge">{{ serviceStatusText }}</span>
           <span class="subtle">上次更新：{{ lastUpdatedText }}</span>
@@ -107,7 +106,6 @@
           <el-progress :percentage="anomalyDensityPercent" :stroke-width="8" status="warning" />
         </div>
       </div>
-      <div class="subtle">后续可接入实时图表（分钟级检测量与异常分布）。</div>
     </section>
   </div>
 </template>

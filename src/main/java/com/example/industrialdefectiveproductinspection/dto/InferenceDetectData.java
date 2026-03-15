@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class InferenceDetectData {
+
     @JsonProperty("description")
     private String description;
 

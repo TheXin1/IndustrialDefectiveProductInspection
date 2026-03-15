@@ -3,6 +3,7 @@ package com.example.industrialdefectiveproductinspection.service.impl;
 import com.example.industrialdefectiveproductinspection.dto.InferenceDetectResponse;
 import com.example.industrialdefectiveproductinspection.exception.ServiceException;
 import com.example.industrialdefectiveproductinspection.service.InferenceService;
+import com.example.industrialdefectiveproductinspection.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -15,9 +16,32 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Service
 public class InferenceServiceImpl implements InferenceService {
+
+    private static final Pattern[] NEGATIVE_PATTERNS = new Pattern[]{
+            Pattern.compile("无(明显)?(异常|缺陷|瑕疵|不良)"),
+            Pattern.compile("没有(明显)?(异常|缺陷|瑕疵|不良)"),
+            Pattern.compile("没有任何(异常|缺陷|瑕疵|不良)"),
+            Pattern.compile("未(见|发现)(明显)?(异常|缺陷|瑕疵|不良)"),
+            Pattern.compile("未发现任何(异常|缺陷|瑕疵|不良)"),
+            Pattern.compile("不存在(异常|缺陷|瑕疵|不良)"),
+            Pattern.compile("(正常|良品|无异常)"),
+            Pattern.compile("no\\s+(anomaly|defect|abnormality)"),
+            Pattern.compile("\\bnormal\\b")
+    };
+    private static final Pattern[] POSITIVE_PATTERNS = new Pattern[]{
+            Pattern.compile("异常"),
+            Pattern.compile("缺陷"),
+            Pattern.compile("瑕疵"),
+            Pattern.compile("不良"),
+            Pattern.compile("anomaly"),
+            Pattern.compile("defect"),
+            Pattern.compile("abnormal")
+    };
+
     private final RestTemplate restTemplate;
     private final String baseUrl;
 
@@ -78,10 +102,16 @@ public class InferenceServiceImpl implements InferenceService {
             if (response.getBody() == null) {
                 throw new ServiceException("无响应数据");
             }
+            boolean hasAnomaly = normalizeAnomalyFlag(
+                    response.getBody().getData().getDescription(),
+                    response.getBody().getData().getHasAnomaly()
+            );
+            response.getBody().getData().setHasAnomaly(hasAnomaly);
             return response.getBody();
         } catch (Exception ex) {
             throw new ServiceException("推理服务错误");
         }
+
     }
 
     private Map<String, Object> getForObject(String path) {
@@ -114,5 +144,28 @@ public class InferenceServiceImpl implements InferenceService {
         } catch (IOException ex) {
             throw new ServiceException("图片读取失败");
         }
+    }
+
+
+
+    private boolean normalizeAnomalyFlag(String description, Boolean fallback) {
+        String text = description == null ? "" : description.toLowerCase();
+        if (text.trim().isEmpty()) {
+            return Boolean.TRUE.equals(fallback);
+        }
+
+        for (Pattern pattern : NEGATIVE_PATTERNS) {
+            if (pattern.matcher(text).find()) {
+                return false;
+            }
+        }
+
+        for (Pattern pattern : POSITIVE_PATTERNS) {
+            if (pattern.matcher(text).find()) {
+                return true;
+            }
+        }
+
+        return Boolean.TRUE.equals(fallback);
     }
 }

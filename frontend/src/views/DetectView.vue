@@ -408,34 +408,6 @@ const detectWithFile = async (file: File, customPrompt?: string) => {
   return res.data
 }
 
-const normalizeAnomalyFlag = (description: string, fallback?: boolean) => {
-  const text = (description || '').toLowerCase()
-  if (!text.trim()) return Boolean(fallback)
-
-  const negativePatterns = [
-    /无(明显)?(异常|缺陷|瑕疵|不良)/,
-    /没有(明显)?(异常|缺陷|瑕疵|不良)/,
-    /没有任何(异常|缺陷|瑕疵|不良)/,
-    /未(见|发现)(明显)?(异常|缺陷|瑕疵|不良)/,
-    /未发现任何(异常|缺陷|瑕疵|不良)/,
-    /不存在(异常|缺陷|瑕疵|不良)/,
-    /(正常|良品|无异常)/,
-    /no\s+(anomaly|defect|abnormality)/,
-    /\bnormal\b/
-  ]
-
-  if (negativePatterns.some((pattern) => pattern.test(text))) {
-    return false
-  }
-
-  const positivePatterns = [/异常/, /缺陷/, /瑕疵/, /不良/, /anomaly/, /defect/, /abnormal/]
-  if (positivePatterns.some((pattern) => pattern.test(text))) {
-    return true
-  }
-
-  return Boolean(fallback)
-}
-
 const buildPromptForQuestion = (question: string) => {
   const historyLines = messages.value
     .filter((item) => item.content && item.content !== DEFAULT_ASSISTANT_TEXT)
@@ -460,12 +432,11 @@ const onBatchDetect = async () => {
       const previewUrl = batchPreviews.value[i] || URL.createObjectURL(file)
       try {
         const data = await detectWithFile(file)
-        const hasAnomaly = normalizeAnomalyFlag(data.data.description, data.data.has_anomaly)
         batchResults.value.push({
           name: file.name,
           preview: previewUrl,
           description: data.data.description,
-          hasAnomaly,
+          hasAnomaly: Boolean(data.data.has_anomaly),
           heatmap: data.data.localization_image_base64
             ? `data:image/png;base64,${data.data.localization_image_base64}`
             : null
@@ -533,7 +504,6 @@ const onDetect = async () => {
   try {
     const data = await callDetect()
     if (!data) return
-    data.data.has_anomaly = normalizeAnomalyFlag(data.data.description, data.data.has_anomaly)
     result.value = data
     heatmap.value = `data:image/png;base64,${data.data.localization_image_base64}`
     const answer = data.data.description
@@ -566,7 +536,6 @@ const onAsk = async () => {
   try {
     const data = await callChatDetect(buildPromptForQuestion(question))
     if (!data) return
-    data.data.has_anomaly = normalizeAnomalyFlag(data.data.description, data.data.has_anomaly)
     result.value = data
     heatmap.value = `data:image/png;base64,${data.data.localization_image_base64}`
     const answer = data.data.description

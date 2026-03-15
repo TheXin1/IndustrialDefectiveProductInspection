@@ -26,7 +26,7 @@
           <div class="subtle">今日平均</div>
         </div>
         <div class="metric-card">
-          <div class="metric-label">近 1 小时异常</div>
+          <div class="metric-label">过去1小时异常</div>
           <div class="metric-value">{{ formatNumber(overview?.alertCount) }}</div>
           <div class="subtle">实时告警量</div>
         </div>
@@ -63,21 +63,10 @@
             :stroke-width="10"
           />
         </div>
-
-<!--        <div class="status-grid">-->
-<!--          <div class="status-item">-->
-<!--            <div class="status-label">报警策略</div>-->
-<!--            <div class="status-value">{{ overview?.alertPolicy || '&#45;&#45;' }}</div>-->
-<!--          </div>-->
-<!--          <div class="status-item">-->
-<!--            <div class="status-label">数据同步</div>-->
-<!--            <div class="status-value">{{ overview?.dataSync || '&#45;&#45;' }}</div>-->
-<!--          </div>-->
-<!--        </div>-->
       </section>
 
       <section class="panel alert-panel" v-loading="loading">
-        <div class="panel-title">实时告警</div>
+        <div class="panel-title">实时报警</div>
         <div v-if="alertItems.length" class="alert-list">
           <div v-for="item in alertItems" :key="item.id" class="alert-item">
             <div class="alert-dot"></div>
@@ -88,7 +77,7 @@
             <div class="alert-tag">{{ item.level }}</div>
           </div>
         </div>
-        <div v-else class="empty-state">暂无实时告警</div>
+        <div v-else class="empty-state">暂无实时报警</div>
       </section>
     </div>
 
@@ -117,6 +106,7 @@ import { api } from '../api'
 import type { DashboardOverview, InspectionRecord } from '../api/types'
 
 type StartupStatus = 'not_started' | 'loading' | 'ready' | 'error'
+
 type AlertItem = {
   id: string
   title: string
@@ -137,26 +127,29 @@ const timer = ref<number | null>(null)
 const reviewAlerts = ref<InspectionRecord[]>([])
 
 const alertItems = computed<AlertItem[]>(() => {
+  const items: AlertItem[] = []
+
   if (reviewAlerts.value.length) {
-    return reviewAlerts.value.map((item) => ({
-      id: String(item.id),
-      title: item.description || '人工复审不通过',
-      time: item.reviewedAt || item.createdAt || '--',
-      level: '高'
-    }))
+    reviewAlerts.value.forEach((item) => {
+      items.push({
+        id: `review-${item.id}`,
+        title: item.description || '人工复审不通过',
+        time: item.reviewedAt || item.createdAt || '--',
+        level: '高'
+      })
+    })
   }
-  if (!overview.value) return []
-  if (overview.value.alertCount > 0) {
-    return [
-      {
-        id: 'alert-1',
-        title: `近 1 小时异常 ${overview.value.alertCount} 次`,
-        time: lastUpdated.value,
-        level: '中'
-      }
-    ]
+
+  if (overview.value && overview.value.alertCount > 0) {
+    items.push({
+      id: 'alert-1',
+      title: `过去1小时异常 ${overview.value.alertCount} 次`,
+      time: lastUpdated.value,
+      level: '中'
+    })
   }
-  return []
+
+  return items
 })
 
 const serviceStatusText = computed(() => serviceStatus.value || '未知')
@@ -256,11 +249,6 @@ onBeforeUnmount(() => {
   font-weight: 700;
 }
 
-.hero-sub {
-  margin-top: 6px;
-  color: var(--muted);
-}
-
 .hero-meta {
   margin-top: 12px;
   display: flex;
@@ -341,12 +329,6 @@ onBeforeUnmount(() => {
 .status-value {
   margin-top: 6px;
   font-weight: 600;
-}
-
-.status-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
 }
 
 .progress-block {

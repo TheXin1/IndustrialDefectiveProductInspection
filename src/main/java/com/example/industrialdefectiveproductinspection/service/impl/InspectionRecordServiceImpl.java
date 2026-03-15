@@ -48,7 +48,11 @@ public class InspectionRecordServiceImpl implements InspectionRecordService {
     }
 
     @Override
-    public void recordDetection(Long userId, String sourceType, InferenceDetectResponse response) {
+    public void recordDetection(Long userId,
+                                String sourceType,
+                                InferenceDetectResponse response,
+                                String imageDataUrl,
+                                String localizationDataUrl) {
         if (response == null || response.getData() == null) {
             return;
         }
@@ -62,6 +66,8 @@ public class InspectionRecordServiceImpl implements InspectionRecordService {
         record.setDescription(response.getData().getDescription());
         record.setHasAnomaly(hasAnomaly ? 1 : 0);
         record.setReviewStatus(0);
+        record.setImageUrl(imageDataUrl);
+        record.setLocalizationImageUrl(localizationDataUrl);
         inspectionRecordMapper.insert(record);
     }
 

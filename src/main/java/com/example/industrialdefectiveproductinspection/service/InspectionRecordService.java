@@ -5,7 +5,11 @@ import com.example.industrialdefectiveproductinspection.dto.InspectionRecordResp
 import com.example.industrialdefectiveproductinspection.dto.PageResult;
 
 public interface InspectionRecordService {
-    void recordDetection(Long userId, String sourceType, InferenceDetectResponse response);
+    void recordDetection(Long userId,
+                         String sourceType,
+                         InferenceDetectResponse response,
+                         String imageDataUrl,
+                         String localizationDataUrl);
 
     PageResult<InspectionRecordResponse> list(Long userId,
                                               Integer hasAnomaly,

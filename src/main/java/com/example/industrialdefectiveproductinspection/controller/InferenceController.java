@@ -7,6 +7,7 @@ import com.example.industrialdefectiveproductinspection.service.InspectionRecord
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
 import java.util.Map;
 
 @RestController
@@ -47,7 +48,9 @@ public class InferenceController {
             @RequestParam(value = "temperature", required = false) Double temperature,
             @RequestParam(value = "userId", required = false) Long userId) {
         InferenceDetectResponse response = inferenceService.detect(image, normalImage, prompt, maxTgtLen, topP, temperature);
-        inspectionRecordService.recordDetection(userId, "upload", response);
+        String imageDataUrl = buildImageDataUrl(image);
+        String localizationDataUrl = buildHeatmapDataUrl(response);
+        inspectionRecordService.recordDetection(userId, "upload", response, imageDataUrl, localizationDataUrl);
         return ApiResponse.ok(response);
     }
 
@@ -62,5 +65,32 @@ public class InferenceController {
             @RequestParam(value = "userId", required = false) Long userId) {
         InferenceDetectResponse response = inferenceService.detect(image, normalImage, prompt, maxTgtLen, topP, temperature);
         return ApiResponse.ok(response);
+    }
+
+    private String buildImageDataUrl(MultipartFile image) {
+        if (image == null || image.isEmpty()) {
+            return null;
+        }
+        try {
+            String contentType = image.getContentType();
+            if (contentType == null || contentType.isBlank()) {
+                contentType = "image/png";
+            }
+            String base64 = Base64.getEncoder().encodeToString(image.getBytes());
+            return "data:" + contentType + ";base64," + base64;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private String buildHeatmapDataUrl(InferenceDetectResponse response) {
+        if (response == null || response.getData() == null) {
+            return null;
+        }
+        String base64 = response.getData().getLocalizationImageBase64();
+        if (base64 == null || base64.isBlank()) {
+            return null;
+        }
+        return "data:image/png;base64," + base64;
     }
 }

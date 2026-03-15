@@ -4,7 +4,7 @@
       <div class="records-header">
         <div>
           <h2 style="margin: 0;">检测记录</h2>
-          <div class="subtle">追踪历史检测结果与异常分布</div>
+          <div class="subtle">追溯历史检测结果与异常分布</div>
         </div>
         <el-button type="primary" plain :loading="loading" @click="fetchRecords">刷新</el-button>
       </div>
@@ -56,9 +56,9 @@
         <el-table-column label="待检图" width="120">
           <template #default="{ row }">
             <el-image
-              v-if="row.imageUrl"
-              :src="row.imageUrl"
-              :preview-src-list="[row.imageUrl]"
+              v-if="normalizeImageUrl(row.imageUrl)"
+              :src="normalizeImageUrl(row.imageUrl)"
+              :preview-src-list="toPreviewList(row.imageUrl)"
               fit="cover"
               class="thumb"
             />
@@ -68,9 +68,9 @@
         <el-table-column label="缺陷图" width="120">
           <template #default="{ row }">
             <el-image
-              v-if="row.localizationImageUrl"
-              :src="row.localizationImageUrl"
-              :preview-src-list="[row.localizationImageUrl]"
+              v-if="normalizeImageUrl(row.localizationImageUrl)"
+              :src="normalizeImageUrl(row.localizationImageUrl)"
+              :preview-src-list="toPreviewList(row.localizationImageUrl)"
               fit="cover"
               class="thumb"
             />
@@ -111,9 +111,28 @@ const page = ref(1)
 const size = ref(10)
 const total = ref(0)
 
+const normalizeImageUrl = (value?: string | null) => {
+  if (!value) return ''
+  const trimmed = value.trim()
+  if (!trimmed) return ''
+  if (trimmed.startsWith('data:')) return trimmed
+  if (/^https?:\/\//i.test(trimmed)) return trimmed
+  if (/^[A-Za-z0-9+/=]+$/.test(trimmed)) {
+    return `data:image/png;base64,${trimmed}`
+  }
+  return trimmed
+}
+
+const toPreviewList = (value?: string | null) => {
+  const src = normalizeImageUrl(value)
+  return src ? [src] : []
+}
+
 const formatDateTime = (value: Date) => {
   const pad = (n: number) => String(n).padStart(2, '0')
-  return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())} ${pad(value.getHours())}:${pad(value.getMinutes())}:${pad(value.getSeconds())}`
+  return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())} ${pad(
+    value.getHours()
+  )}:${pad(value.getMinutes())}:${pad(value.getSeconds())}`
 }
 
 const fetchRecords = async () => {

@@ -16,6 +16,8 @@ public interface InspectionRecordMapper {
 
     List<InspectionRecord> selectPage(@Param("userId") Long userId,
                                       @Param("hasAnomaly") Integer hasAnomaly,
+                                      @Param("reviewStatus") Integer reviewStatus,
+                                      @Param("reviewResult") Integer reviewResult,
                                       @Param("keyword") String keyword,
                                       @Param("startAt") String startAt,
                                       @Param("endAt") String endAt,
@@ -24,7 +26,16 @@ public interface InspectionRecordMapper {
 
     Integer countPage(@Param("userId") Long userId,
                       @Param("hasAnomaly") Integer hasAnomaly,
+                      @Param("reviewStatus") Integer reviewStatus,
+                      @Param("reviewResult") Integer reviewResult,
                       @Param("keyword") String keyword,
                       @Param("startAt") String startAt,
                       @Param("endAt") String endAt);
+
+    int updateReview(@Param("id") Long id,
+                     @Param("reviewStatus") Integer reviewStatus,
+                     @Param("reviewResult") Integer reviewResult,
+                     @Param("reviewNote") String reviewNote,
+                     @Param("reviewedBy") Long reviewedBy,
+                     @Param("reviewedAt") java.time.LocalDateTime reviewedAt);
 }

@@ -78,10 +78,14 @@ public class UserServiceImpl implements UserService {
         toUpdate.setEmail(request.getEmail());
         toUpdate.setPhone(request.getPhone());
         toUpdate.setStatus(request.getStatus());
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            toUpdate.setPasswordHash(PasswordUtils.hash(request.getPassword()));
+        }
         boolean hasField = request.getDisplayName() != null
                 || request.getEmail() != null
                 || request.getPhone() != null
-                || request.getStatus() != null;
+                || request.getStatus() != null
+                || (request.getPassword() != null && !request.getPassword().isEmpty());
         if (hasField) {
             userMapper.update(toUpdate);
         }

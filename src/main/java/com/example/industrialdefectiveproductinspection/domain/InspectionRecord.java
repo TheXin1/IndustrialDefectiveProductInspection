@@ -14,5 +14,10 @@ public class InspectionRecord {
     private String description;
     private Integer hasAnomaly;
     private String modelVersion;
+    private Integer reviewStatus;
+    private Integer reviewResult;
+    private String reviewNote;
+    private Long reviewedBy;
+    private LocalDateTime reviewedAt;
     private LocalDateTime createdAt;
 }

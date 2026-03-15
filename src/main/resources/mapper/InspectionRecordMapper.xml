@@ -11,12 +11,23 @@
         <result column="description" property="description" />
         <result column="has_anomaly" property="hasAnomaly" />
         <result column="model_version" property="modelVersion" />
+        <result column="review_status" property="reviewStatus" />
+        <result column="review_result" property="reviewResult" />
+        <result column="review_note" property="reviewNote" />
+        <result column="reviewed_by" property="reviewedBy" />
+        <result column="reviewed_at" property="reviewedAt" />
         <result column="created_at" property="createdAt" />
     </resultMap>
 
     <insert id="insert" parameterType="com.example.industrialdefectiveproductinspection.domain.InspectionRecord" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO inspection_record (user_id, source_type, image_url, localization_image_url, description, has_anomaly, model_version)
-        VALUES (#{userId}, #{sourceType}, #{imageUrl}, #{localizationImageUrl}, #{description}, #{hasAnomaly}, #{modelVersion})
+        INSERT INTO inspection_record (
+            user_id, source_type, image_url, localization_image_url, description, has_anomaly, model_version,
+            review_status, review_result, review_note, reviewed_by, reviewed_at
+        )
+        VALUES (
+            #{userId}, #{sourceType}, #{imageUrl}, #{localizationImageUrl}, #{description}, #{hasAnomaly}, #{modelVersion},
+            #{reviewStatus}, #{reviewResult}, #{reviewNote}, #{reviewedBy}, #{reviewedAt}
+        )
     </insert>
 
     <select id="countTodayTotal" resultType="int">
@@ -40,7 +51,8 @@
     </select>
 
     <select id="selectPage" resultMap="InspectionRecordResult">
-        SELECT id, user_id, source_type, image_url, localization_image_url, description, has_anomaly, model_version, created_at
+        SELECT id, user_id, source_type, image_url, localization_image_url, description, has_anomaly, model_version,
+               review_status, review_result, review_note, reviewed_by, reviewed_at, created_at
         FROM inspection_record
         <where>
             <if test="userId != null">
@@ -48,6 +60,12 @@
             </if>
             <if test="hasAnomaly != null">
                 AND has_anomaly = #{hasAnomaly}
+            </if>
+            <if test="reviewStatus != null">
+                AND review_status = #{reviewStatus}
+            </if>
+            <if test="reviewResult != null">
+                AND review_result = #{reviewResult}
             </if>
             <if test="keyword != null and keyword != ''">
                 AND description LIKE CONCAT('%', #{keyword}, '%')
@@ -73,6 +91,12 @@
             <if test="hasAnomaly != null">
                 AND has_anomaly = #{hasAnomaly}
             </if>
+            <if test="reviewStatus != null">
+                AND review_status = #{reviewStatus}
+            </if>
+            <if test="reviewResult != null">
+                AND review_result = #{reviewResult}
+            </if>
             <if test="keyword != null and keyword != ''">
                 AND description LIKE CONCAT('%', #{keyword}, '%')
             </if>
@@ -84,4 +108,14 @@
             </if>
         </where>
     </select>
+
+    <update id="updateReview">
+        UPDATE inspection_record
+        SET review_status = #{reviewStatus},
+            review_result = #{reviewResult},
+            review_note = #{reviewNote},
+            reviewed_by = #{reviewedBy},
+            reviewed_at = #{reviewedAt}
+        WHERE id = #{id}
+    </update>
 </mapper>

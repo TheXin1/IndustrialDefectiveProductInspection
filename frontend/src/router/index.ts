@@ -9,6 +9,10 @@ import RealtimeView from '../views/RealtimeView.vue'
 import RecordsView from '../views/RecordsView.vue'
 import ReportsView from '../views/ReportsView.vue'
 import SettingsView from '../views/SettingsView.vue'
+import UsersView from '../views/UsersView.vue'
+import RolesView from '../views/RolesView.vue'
+import PermissionsView from '../views/PermissionsView.vue'
+import AuditView from '../views/AuditView.vue'
 import PlaceholderView from '../views/PlaceholderView.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -25,12 +29,12 @@ const routes: RouteRecordRaw[] = [
       { path: 'records', component: RecordsView, meta: { title: '检测记录' } },
       { path: 'reports', component: ReportsView, meta: { title: '报表统计' } },
       { path: 'settings', component: SettingsView, meta: { title: '个人设置' } },
+      { path: 'access/users', component: UsersView, meta: { title: '用户管理' } },
+      { path: 'access/roles', component: RolesView, meta: { title: '角色管理' } },
+      { path: 'access/permissions', component: PermissionsView, meta: { title: '权限管理' } },
       { path: 'model', component: PlaceholderView, meta: { title: '模型管理' } },
       { path: 'dataset', component: PlaceholderView, meta: { title: '数据集管理' } },
-      { path: 'access/users', component: PlaceholderView, meta: { title: '用户管理' } },
-      { path: 'access/roles', component: PlaceholderView, meta: { title: '角色管理' } },
-      { path: 'access/permissions', component: PlaceholderView, meta: { title: '权限管理' } },
-      { path: 'audit', component: PlaceholderView, meta: { title: '审计日志' } },
+      { path: 'audit', component: AuditView, meta: { title: '审计日志' } },
       { path: 'system', component: PlaceholderView, meta: { title: '系统设置' } },
       { path: 'integration', component: PlaceholderView, meta: { title: '集成管理' } }
     ]

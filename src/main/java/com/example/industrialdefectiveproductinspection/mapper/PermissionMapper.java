@@ -9,4 +9,8 @@ public interface PermissionMapper {
     List<Permission> selectAll();
 
     List<Permission> selectByIds(@Param("ids") List<Long> ids);
+
+    int insert(Permission permission);
+
+    int deleteById(@Param("id") Long id);
 }

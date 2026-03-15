@@ -108,5 +108,10 @@ export interface InspectionRecord {
   description?: string
   hasAnomaly?: boolean
   modelVersion?: string
+  reviewStatus?: number
+  reviewResult?: number
+  reviewNote?: string
+  reviewedBy?: number
+  reviewedAt?: string
   createdAt?: string
 }

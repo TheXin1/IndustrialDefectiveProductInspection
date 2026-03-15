@@ -12,5 +12,10 @@ public class InspectionRecordResponse {
     private String description;
     private Boolean hasAnomaly;
     private String modelVersion;
+    private Integer reviewStatus;
+    private Integer reviewResult;
+    private String reviewNote;
+    private Long reviewedBy;
+    private String reviewedAt;
     private String createdAt;
 }

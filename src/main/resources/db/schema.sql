@@ -72,6 +72,11 @@ CREATE TABLE IF NOT EXISTS inspection_record (
     description TEXT,
     has_anomaly TINYINT NOT NULL DEFAULT 0,
     model_version VARCHAR(100),
+    review_status TINYINT NOT NULL DEFAULT 0,
+    review_result TINYINT NULL,
+    review_note VARCHAR(500),
+    reviewed_by BIGINT,
+    reviewed_at DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_record_user (user_id),
     INDEX idx_record_created (created_at)

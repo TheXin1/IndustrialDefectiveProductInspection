@@ -9,10 +9,14 @@ public interface InspectionRecordService {
 
     PageResult<InspectionRecordResponse> list(Long userId,
                                               Integer hasAnomaly,
+                                              Integer reviewStatus,
+                                              Integer reviewResult,
                                               String keyword,
                                               String startAt,
                                               String endAt,
                                               int page,
                                               int size
                                               );
+
+    void reviewRecord(Long id, Integer reviewResult, String reviewNote, Long reviewerId);
 }

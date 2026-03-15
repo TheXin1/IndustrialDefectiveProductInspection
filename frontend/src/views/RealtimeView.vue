@@ -114,7 +114,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { api } from '../api'
-import type { DashboardOverview } from '../api/types'
+import type { DashboardOverview, InspectionRecord } from '../api/types'
 
 type StartupStatus = 'not_started' | 'loading' | 'ready' | 'error'
 type AlertItem = {
@@ -134,7 +134,17 @@ const startupTotal = ref<number>(0)
 const startupMessage = ref<string>('')
 const timer = ref<number | null>(null)
 
+const reviewAlerts = ref<InspectionRecord[]>([])
+
 const alertItems = computed<AlertItem[]>(() => {
+  if (reviewAlerts.value.length) {
+    return reviewAlerts.value.map((item) => ({
+      id: String(item.id),
+      title: item.description || '人工复审不通过',
+      time: item.reviewedAt || item.createdAt || '--',
+      level: '高'
+    }))
+  }
   if (!overview.value) return []
   if (overview.value.alertCount > 0) {
     return [
@@ -142,7 +152,7 @@ const alertItems = computed<AlertItem[]>(() => {
         id: 'alert-1',
         title: `近 1 小时异常 ${overview.value.alertCount} 次`,
         time: lastUpdated.value,
-        level: '高'
+        level: '中'
       }
     ]
   }
@@ -184,10 +194,11 @@ const formatNumber = (value?: number) => {
 const loadRealtime = async () => {
   loading.value = true
   try {
-    const [overviewRes, healthRes, startupRes] = await Promise.all([
+    const [overviewRes, healthRes, startupRes, reviewRes] = await Promise.all([
       api.dashboardOverview(),
       api.inferenceHealth(),
-      api.inferenceStartup()
+      api.inferenceStartup(),
+      api.recordsList({ reviewStatus: 1, reviewResult: 0, page: 1, size: 5 })
     ])
     if (overviewRes.success) {
       overview.value = overviewRes.data
@@ -202,6 +213,9 @@ const loadRealtime = async () => {
       startupStep.value = Number(data.step || 0)
       startupTotal.value = Number(data.total || 1)
       startupMessage.value = String(data.message || '')
+    }
+    if (reviewRes.success) {
+      reviewAlerts.value = reviewRes.data.records
     }
     lastUpdated.value = new Date().toLocaleTimeString()
   } catch (err: any) {

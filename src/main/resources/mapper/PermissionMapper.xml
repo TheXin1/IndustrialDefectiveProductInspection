@@ -30,4 +30,13 @@
             #{id}
         </foreach>
     </select>
+
+    <insert id="insert" parameterType="com.example.industrialdefectiveproductinspection.domain.Permission" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_permission (code, name, type, parent_id, path, method, description, sort_order)
+        VALUES (#{code}, #{name}, #{type}, #{parentId}, #{path}, #{method}, #{description}, #{sortOrder})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM sys_permission WHERE id = #{id}
+    </delete>
 </mapper>

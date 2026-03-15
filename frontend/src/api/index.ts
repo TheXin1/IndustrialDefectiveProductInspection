@@ -28,6 +28,16 @@ export const api = {
   listUsers(status?: number) {
     return request.get<User[]>('/v1/users', { params: { status } })
   },
+  updateUser(id: number, payload: {
+    displayName?: string
+    email?: string
+    phone?: string
+    password?: string
+    status?: number
+    roleIds?: number[]
+  }) {
+    return request.put<User>(`/v1/users/${id}`, payload)
+  },
   listRoles() {
     return request.get<Role[]>('/v1/roles')
   },
